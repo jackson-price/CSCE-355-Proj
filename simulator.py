@@ -52,59 +52,39 @@ for x in range(stateNum):
 inputF = sys.argv[2]
 inputR = open(inputF, "r")
 
-#get input from open file
-input = []
-for x in inputR:
-	x = x.strip()
-	input.append(x)
+#get input strings
+inputStrings = inputR.readlines()
 
-#compute NFA
-for x in input:
-	curr = 0
-	for y in range(len(x)):
-		nextInput= x[y]
-		if len(str(curr)) > 1:
-			curr = curr % 10
-		currMat = matrix[int(curr)]
-		langIndex = alphabet.index(nextInput)
-		curr = currMat[langIndex]
-	if str(curr) in acceptingStates:
-		print("accept")
+#decide if accepting or not and print
+def accepting(state):
+	if state in acceptingStates:
+		return "accept"
 	else:
-		print("reject")
+		return "reject"
 
-n.close()
-		
+def test(inputs, tmpMat, state):
+	if inputs == "":
+		if(str(state) in acceptingStates):
+			return "accept"
+		else:
+			return "reject"
+	curr = inputs[0].strip()
+	character = int(alphabet.index(curr))
+	outcomes = []
+	remaining = tmpMat[state][character]
+	if remaining[0] == '':
+		return "reject"
+	else:
+		for i in remaining:
+			outcomes.append(test(inputs[1:], tmpMat, int(i)))
+			if "accept" in outcomes:
+				return "accept"
+	if "accept" in outcomes:
+		return "accept"
+	else:
+		return "reject"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+for i in inputStrings:
+	i = i.strip()
+	printText = test(i, matrix, 0)
+	print(printText)
