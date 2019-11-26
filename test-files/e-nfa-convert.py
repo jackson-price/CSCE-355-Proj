@@ -23,10 +23,6 @@ accepting = accepting.split()
 for i in range(len(accepting)):
 	accepting[i] = int(accepting[i])
 
-#print(stateNum)
-#print(alphabet)
-#print(accepting)
-
 transMat = [0]*stateNum
 
 for i in range(stateNum):
@@ -34,6 +30,7 @@ for i in range(stateNum):
 	transMat[i] = line.split()
 
 bracketTrans = transMat
+eClosureList = []
 
 for i in range(stateNum):
 	for j in range(1+int(alphaLength)):
@@ -58,13 +55,7 @@ def eclose(state, i):
 		eClosureList.append(eClosure)
 
 #find all eclosures
-for i in range(stateNum):
-	eclose(i, i)
-
-for i in range(stateNum):
-	for j in range(len(eClosureList[i])):
-		if (int(eClosureList[i][j]) in accepting):
-			accepting.append(i)
+eclose(0, 0)
 
 accepting.sort()
 accepting = list(dict.fromkeys(accepting))
@@ -73,21 +64,28 @@ newTrans = transMat
 incomingE = []
 sourceE = []
 
-for i in range(stateNum):
-	if transMat[i][0] != '':
-		for j in range(1, int(alphaLength)+1):
-			if len(str(transMat[i][0])) > 1:
-				splitE = transMat[i][0].split(",")
-				for k in splitE:
-					temp = int(k)
-					newTrans[i][j] = newTrans[i][j]+str(transMat[int(temp)][j]+",")
-				newTrans[i][j] = newTrans[i][j].rstrip(",")
+#assign new transition
+def newTransitions(state, character):
+	for i in eClosureList:
+		if i[0] == state:
+			if len(i) > 1:
+				return newTransitions(i[1], character)
 			else:
-				if transMat[i][0] == '':
-					transMat[i][0] = 0
-				temp = int(transMat[i][0])
-				newTrans[i][j] = transMat[temp][j]
-			newTrans[i][0] = ''
+				return transMat[state][character]
+
+for i in range(stateNum):
+	if len(transMat[i][0]) > 0:
+		for j in range(1, int(alphaLength)+1):
+			splitE = transMat[i][0].split(",")
+			for k in splitE:
+				temp = int(k)
+				if len(str(transMat[int(k)][0])) == 0:
+					newTrans[i][j] = newTrans[i][j] + str(transMat[int(temp)][j]) + ","
+				else:
+					tmp = newTransitions(i, j)
+					newTrans[i][j] = newTrans[i][j] + str(tmp) + ","
+			newTrans[i][j] = newTrans[i][j].rstrip(",")
+		newTrans[i][0] = ''
 	else:
 		for j in range(1, int(alphaLength)):
 			newTrans[i][j] = transMat[i][j]

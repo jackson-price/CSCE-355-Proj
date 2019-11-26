@@ -48,23 +48,11 @@ for x in range(stateNum):
 		z += 1
 	matrix[x] = tmpMat
 
-#open input file
-inputF = sys.argv[2]
-inputR = open(inputF, "r")
-
-#get input strings
-inputStrings = inputR.readlines()
-
-#decide if accepting or not and print
-def accepting(state):
-	if state in acceptingStates:
-		return "accept"
-	else:
-		return "reject"
+inputStrings = []
 
 def test(inputs, tmpMat, state):
 	if inputs == "":
-		if(str(state) in acceptingStates):
+		if str(state) in acceptingStates:
 			return "accept"
 		else:
 			return "reject"
@@ -84,7 +72,10 @@ def test(inputs, tmpMat, state):
 	else:
 		return "reject"
 
-for i in inputStrings:
-	i = i.strip()
-	printText = test(i, matrix, 0)
-	print(printText)
+#inputF = sys.argv[2]
+#inputR = open(inputF, "r")
+
+
+for i in sys.stdin.readlines():
+	result = test(i, matrix, 0)
+	print(result)

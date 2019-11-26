@@ -16,7 +16,7 @@
 ######## Edit the following to reflect your directory (mandatory):
 
 # root directory for the test files
-$test_files_root = "$ENV{HOME}/Documents/355project";
+$test_files_root = "$ENV{HOME}/Documents/355project/test-files";
 
 ######## Editing below this line is strictly optional. ########
 
